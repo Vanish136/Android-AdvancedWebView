@@ -1,24 +1,29 @@
 package im.delight.android.examples.webview;
 
-import im.delight.android.webview.AdvancedWebView;
-import android.webkit.WebChromeClient;
-import android.widget.Toast;
-import android.webkit.WebView;
-import android.view.View;
-import android.webkit.WebViewClient;
-import android.graphics.Bitmap;
-import android.content.Intent;
 import android.annotation.SuppressLint;
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.util.Log;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Toast;
 
-public class MainActivity extends Activity implements AdvancedWebView.Listener {
+import im.delight.android.webview.AdvancedWebView;
 
-	private static final String TEST_PAGE_URL = "https://www.example.org/";
+import static android.content.ContentValues.TAG;
+
+public class MainActivity extends Activity implements AdvancedWebView.Listener
+{
+
+	private static final String TEST_PAGE_URL = "http://www.qq.com/";
 	private AdvancedWebView mWebView;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
@@ -28,20 +33,24 @@ public class MainActivity extends Activity implements AdvancedWebView.Listener {
 		mWebView.setMixedContentAllowed(true);
 		mWebView.setCookiesEnabled(true);
 		mWebView.setThirdPartyCookiesEnabled(true);
-		mWebView.setWebViewClient(new WebViewClient() {
+		mWebView.setWebViewClient(new WebViewClient()
+		{
 
 			@Override
-			public void onPageFinished(WebView view, String url) {
-				Toast.makeText(MainActivity.this, "Finished loading", Toast.LENGTH_SHORT).show();
+			public void onPageFinished(WebView view, String url)
+			{
+				Log.i(TAG, "WebViewClient.onPageFinished: url=" + url);
 			}
 
 		});
-		mWebView.setWebChromeClient(new WebChromeClient() {
+		mWebView.setWebChromeClient(new WebChromeClient()
+		{
 
 			@Override
-			public void onReceivedTitle(WebView view, String title) {
+			public void onReceivedTitle(WebView view, String title)
+			{
 				super.onReceivedTitle(view, title);
-				Toast.makeText(MainActivity.this, title, Toast.LENGTH_SHORT).show();
+				Log.i(TAG, "WebChromeClient.onReceivedTitle: title=" + title);
 			}
 
 		});
@@ -51,7 +60,8 @@ public class MainActivity extends Activity implements AdvancedWebView.Listener {
 
 	@SuppressLint("NewApi")
 	@Override
-	protected void onResume() {
+	protected void onResume()
+	{
 		super.onResume();
 		mWebView.onResume();
 		// ...
@@ -59,52 +69,69 @@ public class MainActivity extends Activity implements AdvancedWebView.Listener {
 
 	@SuppressLint("NewApi")
 	@Override
-	protected void onPause() {
+	protected void onPause()
+	{
 		mWebView.onPause();
 		// ...
 		super.onPause();
 	}
 
 	@Override
-	protected void onDestroy() {
+	protected void onDestroy()
+	{
 		mWebView.onDestroy();
 		// ...
 		super.onDestroy();
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent)
+	{
 		super.onActivityResult(requestCode, resultCode, intent);
 		mWebView.onActivityResult(requestCode, resultCode, intent);
 		// ...
 	}
 
 	@Override
-	public void onBackPressed() {
-		if (!mWebView.onBackPressed()) { return; }
+	public void onBackPressed()
+	{
+		if (!mWebView.onBackPressed())
+		{
+			return;
+		}
 		// ...
 		super.onBackPressed();
 	}
 
 	@Override
-	public void onPageStarted(String url, Bitmap favicon) {
-		mWebView.setVisibility(View.INVISIBLE);
+	public void onPageStarted(String url, Bitmap favicon)
+	{
+		Log.i(TAG, "onPageStarted: url=" + url);
+		//		mWebView.setVisibility(View.INVISIBLE);
 	}
 
 	@Override
-	public void onPageFinished(String url) {
-		mWebView.setVisibility(View.VISIBLE);
+	public void onPageFinished(String url)
+	{
+		Log.i(TAG, "onPageFinished: url=" + url);
+		//		mWebView.setVisibility(View.VISIBLE);
 	}
 
 	@Override
-	public void onPageError(int errorCode, String description, String failingUrl) {
-		Toast.makeText(MainActivity.this, "onPageError(errorCode = "+errorCode+",  description = "+description+",  failingUrl = "+failingUrl+")", Toast.LENGTH_SHORT).show();
+	public void onPageError(int errorCode, String description, String failingUrl)
+	{
+		Log.e(TAG, "onPageError: url=" + failingUrl + " errCode=" + errorCode + " desc=" + description);
 	}
 
 	@Override
-	public void onDownloadRequested(String url, String suggestedFilename, String mimeType, long contentLength, String contentDisposition, String userAgent) {
-		Toast.makeText(MainActivity.this, "onDownloadRequested(url = "+url+",  suggestedFilename = "+suggestedFilename+",  mimeType = "+mimeType+",  contentLength = "+contentLength+",  contentDisposition = "+contentDisposition+",  userAgent = "+userAgent+")", Toast.LENGTH_LONG).show();
-
+	public void onDownloadRequested(String url, String suggestedFilename, String mimeType, long contentLength, String contentDisposition, String userAgent)
+	{
+		Toast.makeText(MainActivity.this, "onDownloadRequested(url = " + url + ",  suggestedFilename = " + suggestedFilename + ",  mimeType = " + mimeType + ",  contentLength = " + contentLength + ",  contentDisposition = " + contentDisposition + ",  userAgent = " + userAgent + ")", Toast.LENGTH_LONG).show();
+		Log.i(TAG, "onDownloadRequested" +
+				"\nurl=" + url + "\nsuggestedFilename=" + suggestedFilename
+				+ "\nmimeType=" + mimeType + "\ncontentLength=" + contentLength
+				+ "\ncontentDisposition=" + contentDisposition
+				+ "\nuserAgent=" + userAgent);
 		/*if (AdvancedWebView.handleDownload(this, url, suggestedFilename)) {
 			// download successfully handled
 		}
@@ -114,8 +141,9 @@ public class MainActivity extends Activity implements AdvancedWebView.Listener {
 	}
 
 	@Override
-	public void onExternalPageRequest(String url) {
-		Toast.makeText(MainActivity.this, "onExternalPageRequest(url = "+url+")", Toast.LENGTH_SHORT).show();
+	public void onExternalPageRequest(String url)
+	{
+		Log.i(TAG, "onExternalPageRequest: url=" + url);
 	}
 
 }
